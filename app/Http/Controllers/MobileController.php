@@ -190,4 +190,11 @@ class MobileController extends Controller
         // Log::info($packages);
         return response()->json($packages);
     }
+
+    public function AllinpackagesList()
+    {
+        $packages = Package::where('category', 'Allin')->get();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
 }
