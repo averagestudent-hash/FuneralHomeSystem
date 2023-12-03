@@ -169,4 +169,11 @@ class MobileController extends Controller
         // Log::info($announcements);
         return response()->json($announcements);
     }
+
+    public function packagesList()
+    {
+        $packages = Package::all();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
 }
