@@ -184,5 +184,10 @@ class MobileController extends Controller
         return response()->json($packages);
     }
 
-    
+    public function CremationpackagesList()
+    {
+        $packages = Package::where('category', 'Cremation')->get();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
 }
