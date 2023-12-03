@@ -176,4 +176,13 @@ class MobileController extends Controller
         // Log::info($packages);
         return response()->json($packages);
     }
+
+    public function EmbalmingpackagesList()
+    {
+        $packages = Package::where('category', 'Embalming')->get();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
+
+    
 }
