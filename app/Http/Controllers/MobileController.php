@@ -162,4 +162,11 @@ class MobileController extends Controller
 
         return response()->json(['message' => 'success'], 200);
     }
+
+    public function announcementsList()
+    {
+        $announcements = Announcement::orderBy('updated_at', 'desc')->get();
+        // Log::info($announcements);
+        return response()->json($announcements);
+    }
 }
