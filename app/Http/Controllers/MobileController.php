@@ -162,4 +162,39 @@ class MobileController extends Controller
 
         return response()->json(['message' => 'success'], 200);
     }
+
+    public function announcementsList()
+    {
+        $announcements = Announcement::orderBy('updated_at', 'desc')->get();
+        // Log::info($announcements);
+        return response()->json($announcements);
+    }
+
+    public function packagesList()
+    {
+        $packages = Package::all();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
+
+    public function EmbalmingpackagesList()
+    {
+        $packages = Package::where('category', 'Embalming')->get();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
+
+    public function CremationpackagesList()
+    {
+        $packages = Package::where('category', 'Cremation')->get();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
+
+    public function AllinpackagesList()
+    {
+        $packages = Package::where('category', 'Allin')->get();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
 }
