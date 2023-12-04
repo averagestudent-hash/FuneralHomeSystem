@@ -197,4 +197,118 @@ class MobileController extends Controller
         // Log::info($packages);
         return response()->json($packages);
     }
+
+    public function productInfo($id)
+    {
+        // Log::info($id);
+        $products = Product::where('id', $id)->first();
+        // Log::info($products);
+        return response()->json($products);
+    }
+
+    public function packageInfo($id)
+    {
+        // Log::info($id);
+        $packages = Package::where('id', $id)->first();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
+
+    public function addToCart(Request $request)
+    {
+        $carts = Cart::create([
+            'customerID' => $request->customerID,
+            'productID' => $request->productID,
+        ]);
+
+        Log::info($carts);
+
+        return response()->json(['message' => 'success'], 200);
+    }
+
+    public function cartTotal($id)
+    {
+        $customer = Cart::where('customerID', $id)->get();
+        $products = $customer->pluck('productID');
+        $cartData = [];
+        $totalPrice = 0;
+
+        foreach ($products as $product) {
+            $cart = Product::where('id', $product)->first();
+            $cartData[] = $cart;
+            $totalPrice += $cart->price;
+        }
+
+        return response()->json(['message' => $totalPrice], 200);
+    }
+
+    public function cartDelete(Request $request)
+    {
+        $item= Cart::where('customerID', $request->customerID)
+                        ->where('productID', $request->productID)->first();
+        $item->delete();
+
+        return response()->json(['message' => 'success'], 200);
+    }
+
+    public function cartList($id)
+    {
+        $customer = Cart::where('customerID', $id)->get();
+        $products = $customer->pluck('productID');
+        $cartData = [];
+
+        foreach ($products as $product) {
+            $cart = Product::where('id', $product)->first();
+            $cartData[] = $cart;
+        }
+        $cartData = collect($cartData)->sortBy('id')->values()->all();
+        return response()->json($cartData);
+    }
+
+    public function checkout(Request $request)
+    {
+
+        $customer = Cart::where('customerID', $request->customerID)->get();
+        $products = $customer->pluck('productID');
+        $totalPrice = 0;
+
+        foreach ($products as $product) {
+            $cart = Product::where('id', $product)->first();
+            $totalPrice += $cart->price;
+        }
+
+        $order = Order::create([
+            'customerID' => $request->customerID,
+            'name' => $request->name,
+            'address' => $request->address,
+            'contact' => $request->contact,
+            'total' => $totalPrice,
+            'MOP' => $request->modeofpayment,
+            'POP' => $request->proofofpayment,
+            'type' => 'Products',
+            'status' => 'pending'
+        ]);
+        $orderId = $order->id;
+
+        foreach ($products as $product) {
+            $item = Product::where('id', $product)->first();
+            $orderline = Orderline::create([
+                'orderID' => $orderId,
+                'name' => $item->name,
+                'image' => $item->img,
+                'price' => $item->price
+            ]);
+        }
+
+        $customer = Cart::where('customerID', $request->customerID)->delete();
+
+        return response()->json(['message' => $order],200);
+    }
+
+    public function orderList($id)
+    {
+        $orders = Order::where('customerID', $id)->orderBy('updated_at', 'desc')->get();;
+        return response()->json($orders);
+    }
+
 }
