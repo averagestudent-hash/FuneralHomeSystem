@@ -39,5 +39,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/CremationpackagesList', [MobileController::class, 'CremationpackagesList']);
     Route::get('/AllinpackagesList', [MobileController::class, 'AllinpackagesList']);
     Route::get('/productInfo/{id}', [MobileController::class, 'productInfo']);
-    Route::get('/packageInfo/{id}', [MobileController::class, 'packageInfo']);
+    Route::post('/addToCart', [MobileController::class, 'addToCart']);
+    Route::get('/cartList/{id}', [MobileController::class, 'cartList']);
+    Route::get('/cartTotal/{id}', [MobileController::class, 'cartTotal']);
+    Route::post('/cartDelete', [MobileController::class, 'cartDelete']);
+    Route::post('/checkout', [MobileController::class, 'checkout']);
+    Route::get('/orderList/{id}', [MobileController::class, 'orderList']);
+    
 });
