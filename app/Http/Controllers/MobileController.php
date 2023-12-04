@@ -197,4 +197,20 @@ class MobileController extends Controller
         // Log::info($packages);
         return response()->json($packages);
     }
+
+    public function productInfo($id)
+    {
+        // Log::info($id);
+        $products = Product::where('id', $id)->first();
+        // Log::info($products);
+        return response()->json($products);
+    }
+
+    public function packageInfo($id)
+    {
+        // Log::info($id);
+        $packages = Package::where('id', $id)->first();
+        // Log::info($packages);
+        return response()->json($packages);
+    }
 }
