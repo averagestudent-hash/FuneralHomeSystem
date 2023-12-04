@@ -264,4 +264,51 @@ class MobileController extends Controller
         $cartData = collect($cartData)->sortBy('id')->values()->all();
         return response()->json($cartData);
     }
+
+    public function checkout(Request $request)
+    {
+
+        $customer = Cart::where('customerID', $request->customerID)->get();
+        $products = $customer->pluck('productID');
+        $totalPrice = 0;
+
+        foreach ($products as $product) {
+            $cart = Product::where('id', $product)->first();
+            $totalPrice += $cart->price;
+        }
+
+        $order = Order::create([
+            'customerID' => $request->customerID,
+            'name' => $request->name,
+            'address' => $request->address,
+            'contact' => $request->contact,
+            'total' => $totalPrice,
+            'MOP' => $request->modeofpayment,
+            'POP' => $request->proofofpayment,
+            'type' => 'Products',
+            'status' => 'pending'
+        ]);
+        $orderId = $order->id;
+
+        foreach ($products as $product) {
+            $item = Product::where('id', $product)->first();
+            $orderline = Orderline::create([
+                'orderID' => $orderId,
+                'name' => $item->name,
+                'image' => $item->img,
+                'price' => $item->price
+            ]);
+        }
+
+        $customer = Cart::where('customerID', $request->customerID)->delete();
+
+        return response()->json(['message' => $order],200);
+    }
+
+    public function orderList($id)
+    {
+        $orders = Order::where('customerID', $id)->orderBy('updated_at', 'desc')->get();;
+        return response()->json($orders);
+    }
+
 }
